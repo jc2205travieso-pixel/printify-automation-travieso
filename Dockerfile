@@ -1,10 +1,9 @@
 FROM node:20-slim
 
-RUN npx -y playwright@1.48.0 install --with-deps chromium
-
 WORKDIR /app
 COPY package.json .
 RUN npm install
+RUN npx playwright install --with-deps chromium
 COPY server.js .
 
 EXPOSE 3000
