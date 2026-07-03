@@ -52,6 +52,22 @@ app.post('/create-product', async (req, res) => {
   }
 });
 
+app.get('/debug-screenshot', async (req, res) => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
+  try {
+    await page.goto('https://printify.com/app/login', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(3000);
+    const screenshot = await page.screenshot();
+    await browser.close();
+    res.set('Content-Type', 'image/png');
+    res.send(screenshot);
+  } catch (err) {
+    await browser.close();
+    res.status(500).send('Error: ' + err.message);
+  }
+});
+
 app.get('/', (req, res) => res.send('Printify automation server activo'));
 
 const PORT = process.env.PORT || 3000;
